@@ -1,5 +1,13 @@
 # Fonction qui permet d'avoir les infos sur la base de données
 
+import pandas as pd
+
+
+def importdata(path, separateur_csv):
+    """import base de données CSV, chemin et séparateur du csv"""
+    return (pd.read_csv(path, sep=separateur_csv, encoding="utf-8"))
+
+
 def infosbase(df):
     print("=" * 60)
     print("DIMENSIONS DU JEU DE DONNÉES")
