@@ -18,3 +18,16 @@ def infosbase(df):
     print("NOMS DES COLONNES ET TYPES")
     print("=" * 60)
     print(df.dtypes)
+
+
+def verifcom(df, code_commune):
+    """Indiquer le df et le nom de la variable Code insee de la commune
+    La fonction retourne True si la jointure peut être faite (une seule ligne par commune)
+    Elle retourne False sinon"""
+    a = len(df.index) - len(df[code_commune].unique())
+    if a == 0:
+        print("Une seule ligne par commune : jointure possible")
+        return (True)
+    else:
+        print(a + " communes sont présentent deux fois dans la base : jointure impossible")
+        return (False)
