@@ -24,6 +24,7 @@ def verifcom(df, code_commune):
     """Indiquer le df et le nom de la variable Code insee de la commune
     La fonction retourne True si la jointure peut être faite (une seule ligne par commune)
     Elle retourne False sinon"""
+    df[code_commune] = df[code_commune].astype(str).str.zfill(5)  #on met en forme le code commune
     a = len(df.index) - len(df[code_commune].unique())
     if a == 0:
         print("Une seule ligne par commune : jointure possible")
