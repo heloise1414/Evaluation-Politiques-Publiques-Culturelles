@@ -29,5 +29,5 @@ def verifcom(df, code_commune):
         print("Une seule ligne par commune : jointure possible")
         return (True)
     else:
-        print(a + " communes sont présentent deux fois dans la base : jointure impossible")
+        print(str(a) + " communes sont présentent deux fois dans la base : jointure impossible")
         return (False)
