@@ -1,6 +1,12 @@
 # Fonction qui permet d'avoir les infos sur la base de données
 
+from cartiflette import carti_download
+import matplotlib.pyplot as plt
 import pandas as pd
+
+# ======================================================================================
+# PREPARATION DES DONNEES
+# ======================================================================================
 
 
 def importdata(path, separateur_csv):
@@ -32,3 +38,71 @@ def verifcom(df, code_commune):
     else:
         print(str(a) + " communes sont présentent deux fois dans la base : jointure impossible")
         return (False)
+
+
+# ======================================================================================
+# STATS DESC ET VISUALISATION
+# ======================================================================================
+
+# Récupération des contours des communes de France
+communes = carti_download(
+    values=["France"],
+    crs=4326,
+    borders="COMMUNE",
+    vectorfile_format="geojson",
+    filter_by="FRANCE_ENTIERE",
+    source="EXPRESS-COG-CARTO-TERRITOIRE",
+    year=2022
+    )
+
+
+def carte_communes(df, code_insee, variable, couleur, titre):
+    """
+    Affiche une carte choroplèthe des communes.
+
+    Paramètres
+    ----------
+    df : pd.DataFrame
+        DataFrame contenant les données à cartographier.
+    code_insee : str
+        Nom de la colonne contenant le code INSEE de la commune.
+    variable : str
+        Nom de la colonne contenant la variable à représenter.
+    couleur : str
+        Colormap matplotlib à utiliser (ex: 'viridis', 'OrRd', 'Blues').
+    titre : str
+        Titre de la carte.
+
+    Retour
+    ------
+    None (affiche la carte)
+    """
+    # S'assurer que les codes INSEE sont bien au même format (string)
+    communes["INSEE_COM"] = communes["INSEE_COM"].astype(str)
+    df = df.copy()
+    df[code_insee] = df[code_insee].astype(str)
+
+    # Jointure entre la géométrie et les données
+    carte = communes.merge(df, left_on="INSEE_COM", right_on=code_insee, how="inner")
+
+    # Vérification qu'il y a bien des données après la jointure
+    if carte.empty:
+        print("⚠️ Aucune correspondance trouvée entre les codes INSEE des deux bases.")
+        return
+
+    # Affichage de la carte
+    fig, ax = plt.subplots(1, 1, figsize=(10, 10))
+    carte.plot(
+        column=variable,
+        cmap=couleur,
+        linewidth=0.3,
+        edgecolor="grey",
+        legend=True,
+        ax=ax,
+        missing_kwds={"color": "lightgrey", "label": "Non disponible"}
+    )
+
+    ax.set_title(titre, fontsize=16)
+    ax.axis("off")
+    plt.tight_layout()
+    plt.show()
