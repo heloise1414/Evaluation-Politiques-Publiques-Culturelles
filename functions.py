@@ -89,7 +89,7 @@ def carte_communes(df, code_insee, variable, couleur, titre):
     if carte.empty:
         print("⚠️ Aucune correspondance trouvée entre les codes INSEE des deux bases.")
         return
-    
+
     print(carte[variable].isna().sum(), "/", len(carte))
     print(carte[variable].describe())
 
@@ -99,7 +99,7 @@ def carte_communes(df, code_insee, variable, couleur, titre):
     carte.plot(
         column=variable,
         cmap=couleur,
-        scheme="quantiles",   
+        scheme="quantiles",
         k=10,                  # nombre de classes
         linewidth=0.3,
         edgecolor="grey",
