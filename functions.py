@@ -89,20 +89,28 @@ def carte_communes(df, code_insee, variable, couleur, titre):
     if carte.empty:
         print("⚠️ Aucune correspondance trouvée entre les codes INSEE des deux bases.")
         return
+    
+    print(carte[variable].isna().sum(), "/", len(carte))
+    print(carte[variable].describe())
 
     # Affichage de la carte
-    fig, ax = plt.subplots(1, 1, figsize=(10, 10))
+    fig, ax = plt.subplots(1, 1, figsize=(10, 8))  # ratio plus adapté à la métropole
+    ax.set_aspect("equal")
     carte.plot(
         column=variable,
         cmap=couleur,
+        scheme="quantiles",   
+        k=10,                  # nombre de classes
         linewidth=0.3,
         edgecolor="grey",
         legend=True,
         ax=ax,
-        missing_kwds={"color": "lightgrey", "label": "Non disponible"}
+        missing_kwds={"color": "green", "label": "Non disponible"}
     )
 
     ax.set_title(titre, fontsize=16)
+    ax.set_xlim(-5, 10)
+    ax.set_ylim(41, 51.5)
     ax.axis("off")
     plt.tight_layout()
     plt.show()
