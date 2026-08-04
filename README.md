@@ -28,7 +28,7 @@ Une ligne par commune (code_insee) avec notamment :
 - Diplômes (en part de la population) : aucun_diplome, inf_bac, dipl_sup, sup_master ;
 
 Le détail complet des variables (type, unité, description) est disponible dans le notebook, section Variables de la base df_final.
-
+<table>
 <caption>
 Source des données
 </caption>
