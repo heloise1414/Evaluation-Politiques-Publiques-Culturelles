@@ -28,3 +28,42 @@ Une ligne par commune (code_insee) avec notamment :
 - Diplômes (en part de la population) : aucun_diplome, inf_bac, dipl_sup, sup_master ;
 
 Le détail complet des variables (type, unité, description) est disponible dans le notebook, section Variables de la base df_final.
+
+<caption>
+Source des données
+</caption>
+    <thead>
+    <tr>
+        <th scope="col">Nom</th>
+        <th scope="col">Fichier attendu</th>
+        <th scope="col">Source</th>
+        <th scope="col">Descriptio</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <th scope="row">Basilic</th>
+        <td>basilic_29072026.csv</td>
+        <td>INSEE - https://culture.data.gouv.fr/datasets/61777ddaa9101d073e5506cd</td>
+        <td>Base des lieux et équipements culturels (agrégation de plusieurs directions du ministère de la Culture, du CNC, du CNL, d'Artcena, etc.), à l'échelle de la France entière.</td>
+    </tr>
+    <tr>
+      <th scope="row">INSEE — Population</th>
+      <td>DS_RP_TD_POPULATION_AGEHARSEX_PRINC_2023_data.csv</td>
+      <td></td>
+      <td>Population des communes par tranche d'âge et par sexe.</td>
+    </tr>
+    <tr>
+      <th scope="row">INSEE — Filosofi</th>
+      <td>DS_FILOSOFI_CC_2023_data.csv</td>
+      <td> INSEE – Filosofi (revenus localisés) https://www.insee.fr/fr/statistiques/4176290 </td>
+      <td>Revenus et niveau de vie (revenu médian, taux de pauvreté).</td>
+    </tr>
+    <tr>
+      <th scope="row">INSEE — Diplômes</th>
+      <td>DS_RP_DIPLOMES_PRINC_2023_data.csv</td>
+      <td></td>
+      <td>Niveau de diplôme de la population par commune (année 2023).</td>
+    </tr>
+  </tbody>
+</table>
