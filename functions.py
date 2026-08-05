@@ -83,7 +83,7 @@ def carte_dep(df, code_insee, variable, couleur, titre):
     df[code_insee] = df[code_insee].astype(str)
 
     # Jointure entre la géométrie et les données
-    carte = departements.merge(df, left_on="INSEE_DEP", right_on="code_dep", how="inner")
+    carte = departements.merge(df, left_on="INSEE_DEP", right_on="code_insee", how="inner")
 
     if carte.empty:
         print("⚠️ Aucune correspondance trouvée entre les codes INSEE des deux bases.")
