@@ -26,17 +26,17 @@ def infosbase(df):
     print(df.dtypes)
 
 
-def verifcom(df, code_commune):
-    """Indiquer le df et le nom de la variable Code insee de la commune
+def verifdep(df, code_insee):
+    """Indiquer le df et le nom de la variable Code insee du departement
     La fonction retourne True si la jointure peut être faite (une seule ligne par commune)
     Elle retourne False sinon"""
-    df[code_commune] = df[code_commune].astype(str).str.zfill(5)  # on met en forme le code commune
-    a = len(df.index) - len(df[code_commune].unique())
+    df[code_insee] = df[code_insee].astype(str).str.zfill(2)  # on met en forme le code commune
+    a = len(df.index) - len(df[code_insee].unique())
     if a == 0:
-        print("Une seule ligne par commune : jointure possible")
+        print("Une seule ligne par département : jointure possible")
         return (True)
     else:
-        print(str(a) + " communes sont présentent deux fois dans la base : jointure impossible")
+        print(str(a) + " départements sont présents deux fois dans la base : jointure impossible")
         return (False)
 
 
@@ -44,11 +44,11 @@ def verifcom(df, code_commune):
 # STATS DESC ET VISUALISATION
 # ======================================================================================
 
-# Récupération des contours des communes de France
-communes = carti_download(
+# Récupération des contours des départements de France
+departements = carti_download(
     values=["France"],
     crs=4326,
-    borders="COMMUNE",
+    borders="DEPARTEMENT",
     vectorfile_format="geojson",
     filter_by="FRANCE_ENTIERE",
     source="EXPRESS-COG-CARTO-TERRITOIRE",
@@ -56,16 +56,17 @@ communes = carti_download(
     )
 
 
-def carte_com(df, code_insee, variable, couleur, titre):
+def carte_dep(df, code_insee, variable, couleur, titre):
     """
-    Affiche une carte choroplèthe des communes.
+    Affiche une carte choroplèthe des départements.
 
     Paramètres
     ----------
     df : pd.DataFrame
         DataFrame contenant les données à cartographier.
     code_insee : str
-        Nom de la colonne contenant le code INSEE de la commune.
+        Nom de la colonne contenant le code INSEE (commune ou département).
+        Si code commune, les 2 premiers caractères seront utilisés comme code département.
     variable : str
         Nom de la colonne contenant la variable à représenter.
     couleur : str
@@ -77,15 +78,13 @@ def carte_com(df, code_insee, variable, couleur, titre):
     ------
     None (affiche la carte)
     """
-    # S'assurer que les codes INSEE sont bien au même format (string)
-    communes["INSEE_COM"] = communes["INSEE_COM"].astype(str)
+    departements["INSEE_DEP"] = departements["INSEE_DEP"].astype(str)
     df = df.copy()
     df[code_insee] = df[code_insee].astype(str)
 
     # Jointure entre la géométrie et les données
-    carte = communes.merge(df, left_on="INSEE_COM", right_on=code_insee, how="inner")
+    carte = departements.merge(df, left_on="INSEE_DEP", right_on="code_dep", how="inner")
 
-    # Vérification qu'il y a bien des données après la jointure
     if carte.empty:
         print("⚠️ Aucune correspondance trouvée entre les codes INSEE des deux bases.")
         return
@@ -93,72 +92,11 @@ def carte_com(df, code_insee, variable, couleur, titre):
     print(carte[variable].isna().sum(), "/", len(carte))
     print(carte[variable].describe())
 
-    # Affichage de la carte
-    fig, ax = plt.subplots(1, 1, figsize=(10, 8))  # ratio plus adapté à la métropole
+    fig, ax = plt.subplots(1, 1, figsize=(10, 8))
     ax.set_aspect("equal")
     carte.plot(
         column=variable,
         cmap=couleur,
-        linewidth=0.3,
-        edgecolor="grey",
-        legend=True,
-        ax=ax,
-        missing_kwds={"color": "green", "label": "Non disponible"}
-    )
-
-    ax.set_title(titre, fontsize=16)
-    ax.set_xlim(-5, 10)
-    ax.set_ylim(41, 51.5)
-    ax.axis("off")
-    plt.tight_layout()
-    plt.show()
-
-
-def carte_com_cat(df, code_insee, variable, couleur, titre):
-    """
-    Affiche une carte choroplèthe des communes.
-
-    Paramètres
-    ----------
-    df : pd.DataFrame
-        DataFrame contenant les données à cartographier.
-    code_insee : str
-        Nom de la colonne contenant le code INSEE de la commune.
-    variable : str
-        Nom de la colonne contenant la variable à représenter.
-    couleur : str
-        Colormap matplotlib à utiliser (ex: 'viridis', 'OrRd', 'Blues').
-    titre : str
-        Titre de la carte.
-
-    Retour
-    ------
-    None (affiche la carte)
-    """
-    # S'assurer que les codes INSEE sont bien au même format (string)
-    communes["INSEE_COM"] = communes["INSEE_COM"].astype(str)
-    df = df.copy()
-    df[code_insee] = df[code_insee].astype(str)
-
-    # Jointure entre la géométrie et les données
-    carte = communes.merge(df, left_on="INSEE_COM", right_on=code_insee, how="inner")
-
-    # Vérification qu'il y a bien des données après la jointure
-    if carte.empty:
-        print("⚠️ Aucune correspondance trouvée entre les codes INSEE des deux bases.")
-        return
-
-    print(carte[variable].isna().sum(), "/", len(carte))
-    print(carte[variable].describe())
-
-    # Affichage de la carte
-    fig, ax = plt.subplots(1, 1, figsize=(10, 8))  # ratio plus adapté à la métropole
-    ax.set_aspect("equal")
-    carte.plot(
-        column=variable,
-        cmap=couleur,
-        scheme="quantiles",
-        k=10,                  # nombre de classes
         linewidth=0.3,
         edgecolor="grey",
         legend=True,
